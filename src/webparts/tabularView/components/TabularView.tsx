@@ -8,6 +8,7 @@ import {
   SelectionMode,
   Stack,
   TextField,
+  Text,
 } from "@fluentui/react";
 import { TableColumns } from "../constants";
 
@@ -22,7 +23,7 @@ export function TabularView(props: ITabularViewProps): React.ReactElement {
 
   const copyAndSort = (
     items: IList[],
-    columnKey: string,
+    columnKey: string | undefined,
     isSortedDescending?: boolean
   ): IList[] => {
     const key = columnKey as keyof IList;
@@ -58,7 +59,7 @@ export function TabularView(props: ITabularViewProps): React.ReactElement {
     });
     const newItems = copyAndSort(
       filteredTableViewItems,
-      currColumn.fieldName!,
+      currColumn.fieldName,
       currColumn.isSortedDescending
     );
     setListTableColumns(newColumns);
@@ -96,7 +97,7 @@ export function TabularView(props: ITabularViewProps): React.ReactElement {
   const filterList = (
     e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
     text: string
-  ) => {
+  ): void => {
     setFilteredTableViewItems(
       text
         ? tableViewItems.filter(
@@ -107,7 +108,9 @@ export function TabularView(props: ITabularViewProps): React.ReactElement {
   };
 
   React.useEffect(() => {
-    getListItems();
+    getListItems().catch((error) => {
+      console.error(error);
+    });
   }, []);
 
   return (
@@ -117,18 +120,27 @@ export function TabularView(props: ITabularViewProps): React.ReactElement {
         label="Filter by Title"
         onChange={filterList}
       />
-      <DetailsList
-        styles={{
-          root: { width: "100%", border: " 1px solid rgb(216, 210, 210)" },
-        }}
-        items={filteredTableViewItems}
-        columns={listTableColumns}
-        compact={false}
-        selectionMode={SelectionMode.none}
-        setKey="none"
-        layoutMode={DetailsListLayoutMode.justified}
-        isHeaderVisible={true}
-      />
+      {filteredTableViewItems.length > 0 ? (
+        <DetailsList
+          styles={{
+            root: { width: "100%", border: " 1px solid rgb(216, 210, 210)" },
+          }}
+          items={filteredTableViewItems}
+          columns={listTableColumns}
+          compact={false}
+          selectionMode={SelectionMode.none}
+          setKey="none"
+          layoutMode={DetailsListLayoutMode.justified}
+          isHeaderVisible={true}
+        />
+      ) : (
+        <Text
+          variant="medium"
+          styles={{ root: { padding: 16, border: "1px solid #d8d2d2" } }}
+        >
+          No records found
+        </Text>
+      )}
     </Stack>
   );
 }

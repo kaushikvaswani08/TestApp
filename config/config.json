@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "tabular-view-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/tabularView/TabularViewWebPart.js",
+          "manifest": "./src/webparts/tabularView/TabularViewWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "TabularViewWebPartStrings": "lib/webparts/tabularView/loc/{locale}.js"
+  }
+}
